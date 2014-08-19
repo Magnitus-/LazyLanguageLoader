@@ -1,0 +1,8 @@
+{
+  "name": "LazyLanguageLoaderTestServer",
+  "author": "Eric Vallee",
+  "private": true,
+  "dependencies": {
+    "express": "~4.8.4"
+  }
+}
