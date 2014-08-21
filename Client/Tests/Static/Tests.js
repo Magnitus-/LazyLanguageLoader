@@ -51,13 +51,16 @@ QUnit.asyncTest("Update", function( assert ) {
     jQuery('div.None').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
         assert.ok(jQuery('div.None div[data-String=Blue]').text()=="Bleu" && jQuery('div.None div[data-String=House]').text()=="Maison", "Confirming that uploader works at the most basic level.");
         assert.ok(jQuery('div.None form input').val()=="Soumettre", "Confirming that uploader works with submit buttons.");
-        assert.ok(jQuery('div.None div[data-String=CarLove]').text()=="Greg aime mon automobile rouge", "Confirming loading string with arguments work.");
+        assert.ok(jQuery('div.None div[data-String=CarLove]').text()=="Greg aime mon automobile rouge", "Confirming loading string with arguments works.");
+        assert.ok(window.FrenchTranslatorFromHell === undefined, "Confirming protection against javaScript injection");
+        assert.ok(jQuery('div.None div[data-String=MixedFriendship]').text()=="Amanda est bonne amie avec Greg, mais pas avec Tom", "Confirming loading string with arguments works in the absence of argument translation.");
         jQuery('div.None').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
             assert.ok(AjaxRequests==1, "Confirming that content is properly cached.");
             jQuery('div.None').LazyLanguageLoader('LoadLanguage', {'Language': 'English', 'Callback': function(){
                     assert.ok(jQuery('div.None div[data-String=Blue]').text()=="Blue" && jQuery('div.None div[data-String=House]').text()=="House", "Confirming that uploader works with language change.");
                     assert.ok(jQuery('div.None form input').val()=="Submit", "Confirming that uploader works with language change.");
                     assert.ok(jQuery('div.None div[data-String=CarLove]').text()=="Greg likes my red car", "Confirming loading string with arguments works with language change.");
+                    assert.ok(jQuery('div.None div[data-String=MixedFriendship]').text()=="Amanda is good friends with Greg, but not with Tom", "Confirming loading string with arguments works in the absence of argument translation and language change.");
                     QUnit.start();
             }});
         }});
