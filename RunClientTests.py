@@ -21,7 +21,10 @@ THE SOFTWARE.
 """
 import os
 import urllib2
-import webbrowser
+import subprocess
+import atexit
+import signal
+import sys
 
 Scripts = {'Sprintf': {'Url': "https://raw.githubusercontent.com/alexei/sprintf.js/master/dist/sprintf.min.js", 'Name': 'sprintf.min.js'},
            'PersistentBrowserObject': {'Url': "https://raw.githubusercontent.com/Magnitus-/PersistentBrowserObject/master/jQuery.PersistentBrowserObject.Min.js", 'Name': 'jQuery.PersistentBrowserObject.Min.js'},
@@ -30,21 +33,22 @@ StartingPath = os.getcwd()
 ServerPath = os.path.join(StartingPath, 'Client', 'Tests')
 
 def Exists(Command):
-    for Path in os.environ['PATH']:
+    for Path in os.environ['PATH'].split(os.pathsep):
         if os.path.exists(os.path.join(Path, Command)):
             return True
     return False
 
 def InstallStaticScript(ScriptName, ScriptUrl):
-    ScriptPath = os.path.join(StartingPath, 'Client', 'Tests', 'Static')
+    ScriptPath = os.path.join(StartingPath, 'Client', 'Tests', 'Static', ScriptName)
     if os.path.exists(ScriptPath):
         return
-    Request = urllib2.Request(ScriptUrl)
-    Descriptor = urllib2.urlopen(Request)
-	except urllib2.HTTPError:
-	    exit()
-    except urllib2.URLError:
-	    exit()
+    try:
+        Request = urllib2.Request(ScriptUrl)
+        Descriptor = urllib2.urlopen(Request)
+    except urllib2.HTTPError as Error:
+        exit()
+    except urllib2.URLError as Error:
+        exit()
     Reply = Descriptor.read()
     ScriptFile = open(ScriptPath,'w')
     ScriptFile.write(Reply)
@@ -56,12 +60,23 @@ def GetDependencies():
     InstallStaticScript(Scripts['Sprintf']['Name'], Scripts['Sprintf']['Url'])
     InstallStaticScript(Scripts['PersistentBrowserObject']['Name'], Scripts['PersistentBrowserObject']['Url'])
     os.chdir(ServerPath)
-    os.system("npm install")
+    subprocess.call(["npm", "install"])
 
+
+if sys.version_info.major==2:
+    UserInput = raw_input
+else:
+    UserInput = input
+
+NodeServer = None
+def RunServer():
+    os.chdir(ServerPath)
+    NodeName = ('nodejs' if Exists('nodejs') else 'node')
+    #NodeServer = subprocess.Popen(args=NodeName+" "+Scripts['TestServer']['Name'], shell=True)
+    NodeServer = subprocess.Popen(args=[NodeName, Scripts['TestServer']['Name']])
+    print("Open your browser at the url 127.0.0.1:8080 to run the tests. Type something to kill both this process and the server.")
+    UserInput()
+    NodeServer.terminate()
+    
 GetDependencies()
-os.chdir(ServerPath)
-NodeName = ('nodejs' if Exists('nodejs') else 'node')
-os.system(NodeName+" "+Scripts['TestServer']['Name'])
-webbrowser.open('127.0.0.1:8080', new=2)
-
-
+RunServer()
