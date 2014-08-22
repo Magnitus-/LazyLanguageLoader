@@ -30,8 +30,8 @@ var BasePath = path.resolve(__dirname, '..', 'Source');
 var StaticPath = path.resolve(__dirname, 'Static');
 
 var FakeLanguageDB = {};
-FakeLanguageDB['French'] = {'Blue': 'Bleu', 'House': 'Maison', 'CarLove': '%1$s aime mon %3$s %2$s', 'red': 'rouge', 'car': 'automobile', 'Submit': 'Soumettre', 'Hello': '<script>window.FrenchTranslatorFromHell = true;</script>', 'MixedFriendship': '%1$s est bonne amie avec %2$s, mais pas avec %3$s'};
-FakeLanguageDB['English'] = {'Blue': 'Blue', 'House': 'House', 'CarLove': '%1$s likes my %2$s %3$s', 'red': 'red', 'car': 'car', 'Submit': 'Submit', 'Hello': 'Hello', 'MixedFriendship': '%1$s is good friends with %2$s, but not with %3$s'};
+FakeLanguageDB['French'] = {'Blue': 'Bleu', 'House': 'Maison', 'CarLove': '%1$s aime mon %3$s %2$s', 'red': 'rouge', 'car': 'automobile', 'Submit': 'Soumettre', 'Hello': '<script>window.FrenchTranslatorFromHell = true;</script>', 'MixedFriendship': '%1$s est bonne amie avec %2$s, mais pas avec %3$s', 'FastRunner': '%1$s est un coureur rapide', 'SchoolAffection': '%1$s aime %2$s l\'\u00E9cole', 'Lot': 'beaucoup'};
+FakeLanguageDB['English'] = {'Blue': 'Blue', 'House': 'House', 'CarLove': '%1$s likes my %2$s %3$s', 'red': 'red', 'car': 'car', 'Submit': 'Submit', 'Hello': 'Hello', 'MixedFriendship': '%1$s is good friends with %2$s, but not with %3$s', 'FastRunner': '%1$s is a fast runner', 'SchoolAffection': '%1$s likes school a %2$s', 'Lot': 'lot'};
 
 app.use('/Base', express.static(BasePath));
 app.use('/Static', express.static(StaticPath));

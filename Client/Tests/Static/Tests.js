@@ -48,20 +48,28 @@ jQuery.LazyLanguageLoader('SetAjaxWrapper', TestAjaxWrapper);
 QUnit.asyncTest("Update", function( assert ) {
     localStorage.clear();
     jQuery.LazyLanguageLoader('SetDefaultLanguage', 'French');
-    jQuery('div.None').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
-        assert.ok(jQuery('div.None div[data-String=Blue]').text()=="Bleu" && jQuery('div.None div[data-String=House]').text()=="Maison", "Confirming that uploader works at the most basic level.");
-        assert.ok(jQuery('div.None form input').val()=="Soumettre", "Confirming that uploader works with submit buttons.");
-        assert.ok(jQuery('div.None div[data-String=CarLove]').text()=="Greg aime mon automobile rouge", "Confirming loading string with arguments works.");
+    jQuery('div.First').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
+        assert.ok(jQuery('div.First div[data-String=Blue]').text()=="Bleu" && jQuery('div.None div[data-String=House]').text()=="Maison", "Confirming that uploader works at the most basic level.");
+        assert.ok(jQuery('div.First form input').val()=="Soumettre", "Confirming that uploader works with submit buttons.");
+        assert.ok(jQuery('div.First div[data-String=CarLove]').text()=="Greg aime mon automobile rouge", "Confirming loading string with arguments works.");
         assert.ok(window.FrenchTranslatorFromHell === undefined, "Confirming protection against javaScript injection");
-        assert.ok(jQuery('div.None div[data-String=MixedFriendship]').text()=="Amanda est bonne amie avec Greg, mais pas avec Tom", "Confirming loading string with arguments works in the absence of argument translation.");
-        jQuery('div.None').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
+        assert.ok(jQuery('div.First div[data-String=MixedFriendship]').text()=="Amanda est bonne amie avec Greg, mais pas avec Tom", "Confirming loading string with arguments works in the absence of argument translation.");
+        jQuery('div.First').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
             assert.ok(AjaxRequests==1, "Confirming that content is properly cached.");
-            jQuery('div.None').LazyLanguageLoader('LoadLanguage', {'Language': 'English', 'Callback': function(){
-                    assert.ok(jQuery('div.None div[data-String=Blue]').text()=="Blue" && jQuery('div.None div[data-String=House]').text()=="House", "Confirming that uploader works with language change.");
-                    assert.ok(jQuery('div.None form input').val()=="Submit", "Confirming that uploader works with language change.");
-                    assert.ok(jQuery('div.None div[data-String=CarLove]').text()=="Greg likes my red car", "Confirming loading string with arguments works with language change.");
-                    assert.ok(jQuery('div.None div[data-String=MixedFriendship]').text()=="Amanda is good friends with Greg, but not with Tom", "Confirming loading string with arguments works in the absence of argument translation and language change.");
-                    QUnit.start();
+            jQuery('div.First').LazyLanguageLoader('LoadLanguage', {'Language': 'English', 'Callback': function(){
+                    assert.ok(jQuery('div.First div[data-String=Blue]').text()=="Blue" && jQuery('div.None div[data-String=House]').text()=="House", "Confirming that uploader works with language change.");
+                    assert.ok(jQuery('div.First form input').val()=="Submit", "Confirming that uploader works with language change.");
+                    assert.ok(jQuery('div.First div[data-String=CarLove]').text()=="Greg likes my red car", "Confirming loading string with arguments works with language change.");
+                    assert.ok(jQuery('div.First div[data-String=MixedFriendship]').text()=="Amanda is good friends with Greg, but not with Tom", "Confirming loading string with arguments works in the absence of argument translation and language change.");
+                    jQuery('div#Empty').LazyLanguageLoader('StrToAttr', {'String': 'FastRunner', 'Args': ['Jim']});
+                    var StringHTML = jQuery.LazyLanguageLoader('StrToHtmlRepr', {'String': 'SchoolAffection', 'Args': ['Brad', 'Lot'], 'Translate': [1]});
+                    jQuery('<div '+StringHTML+'></div>').appendTo('div.Second');
+                    jQuery('div.Second').LazyLanguageLoader('LoadLanguage', {'Language': 'English', 'Callback': function(){
+                            assert.ok(jQuery('div.Second div[data-String=NotInDatabase]').text()=="Same", "Confirming that tags containing strings that aren't found are not modified.");
+                            assert.ok(jQuery('div#Empty').text()=="Jim is a fast runner", "Confirming that dynamically loading strings into existing tags works.");
+                            assert.ok(jQuery('div.Second div[data-String=SchoolAffection]').text()=="Brad likes school a lot", "Confirming that generating strings dynamically inside html works.");
+                            QUnit.start();
+                    }});
             }});
         }});
     }});

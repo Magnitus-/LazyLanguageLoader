@@ -45,15 +45,15 @@ THE SOFTWARE.
     };
     
     Methods['StrArgsToHtmlRepr'] = function(Data){
-        var Data = jQuery.extend({'ArgMap': null, 'TranslateList': null}, Data||{});
+        var Data = jQuery.extend({'Args': null, 'Translate': null}, Data||{});
         var ToReturn = "";
-        if(Data['ArgMap']!=null)
+        if(Data['Args'])
         {
-            ToReturn+="data-StringArgs='"+window.JSON.stringify(Data['ArgMap'])+"'";
+            ToReturn+="data-StringArgs='"+window.JSON.stringify(Data['Args'])+"'";
         }
-        if(Data['TranslateList']!=null)
+        if(Data['Translate'])
         {
-            ToReturn+=" data-TranslateArgs='"+window.JSON.stringify(Data['TranslateList'])+"'";
+            ToReturn+=" data-TranslateArgs='"+window.JSON.stringify(Data['Translate'])+"'";
         }
         return(ToReturn);
     };
@@ -61,7 +61,7 @@ THE SOFTWARE.
     Methods['StrToHtmlRepr'] = function(Data){
         if(!CheckInput(Data))
         {
-            throw new TypeError("LazyLanguageLoader: Wrong argument structure passed to LllStrToHtmlRepr function.");
+            throw new TypeError("LazyLanguageLoader: Wrong argument structure passed to StrToHtmlRepr function.");
         }
         if(typeof(Data)=='string')
         {
@@ -69,7 +69,7 @@ THE SOFTWARE.
         }
         else
         {
-            return("data-String='"+Data['String']+"' "+Methods.StrArgsToHtmlRepr(Data['Args']));
+            return("data-String='"+Data['String']+"' "+Methods.StrArgsToHtmlRepr(Data));
         }
     };
     
@@ -145,14 +145,14 @@ THE SOFTWARE.
     };
     
     Methods['StrArgsToAttr'] = function(Data){
-        var Data = jQuery.extend({'ArgMap': null, 'TranslateList': null}, Data||{});
-        if(Data['ArgMap']!=null)
+        var Data = jQuery.extend({'Args': null, 'Translate': null}, Data||{});
+        if(Data['Args'])
         {
-            this.attr('data-StringArgs', window.JSON.stringify(Data['ArgMap']));
+            this.attr('data-StringArgs', window.JSON.stringify(Data['Args']));
         }
-        if(Data['TranslateList']!=null)
+        if(Data['Translate'])
         {
-            this.attr('data-TranslateArgs', window.JSON.stringify(Data['TranslateList']));
+            this.attr('data-TranslateArgs', window.JSON.stringify(Data['Translate']));
         }
         return(this);
     };
@@ -160,7 +160,7 @@ THE SOFTWARE.
     Methods['StrToAttr'] = function(Data){
         if(!CheckInput(Data))
         {
-            throw new TypeError("LazyLanguageLoader: Wrong argument structure passed to LllStrToAttr function.");
+            throw new TypeError("LazyLanguageLoader: Wrong argument structure passed to StrToAttr function.");
         }
         if(typeof(Data)=='string')
         {
@@ -169,7 +169,7 @@ THE SOFTWARE.
         else
         {
             this.attr('data-String', Data['String']);
-            Methods.StrArgsToAttr.call(this, Data['Args']);
+            Methods.StrArgsToAttr.call(this, Data);
         }
         return(this);
     };
@@ -177,7 +177,7 @@ THE SOFTWARE.
     jQuery.LazyLanguageLoader = function(Method){
         if(jQuery.inArray(Method, GlobalMethods)>=0)
         {
-            Methods[Method].apply(this, Array.prototype.slice.call(arguments, 1));
+            return Methods[Method].apply(this, Array.prototype.slice.call(arguments, 1));
         }
         else
         {
@@ -202,7 +202,12 @@ THE SOFTWARE.
     //Private Internal Global utilities
     function CheckInput(Input)
     {
-        return((typeof(Input)=='string')||((typeof(Input['String'])=='string')&&(typeof(Input['Args'])=='object')));
+        var IsString = typeof(Input)=='string';
+        var IsObject = typeof(Input)=='object';
+        var StringMemberOk = typeof(Input['String'])=='string';
+        var ArgsMemberOk = typeof(Input['Args']===undefined) || Input['Args'] instanceof Array;
+        var TranslateMemberOk = typeof(Input['Translate']===undefined) || Input['Translate'] instanceof Array;
+        return(IsString||(IsObject&&StringMemberOk&&ArgsMemberOk&&TranslateMemberOk));
     }
     
     function LocalStore(Prefix)
@@ -287,8 +292,6 @@ THE SOFTWARE.
                             Args[Value]=LocalStoreInstance.LoadString({'Tag': Args[Value], 'Language': Options.Language});
                         });
                     }
-                    console.log(Translation);
-                    console.log(Args);
                     Translation = vsprintf(Translation, Args);
                 }
     

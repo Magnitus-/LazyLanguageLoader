@@ -26,16 +26,20 @@ THE SOFTWARE.>
         <link rel="stylesheet" href="Tests.css">
     </head>
     <body>
-        <div class="None">
+        <div class="None First">
             <div data-String="Blue">Blue</div>
             <div data-String="House">House</div>
             <div data-String="CarLove" data-StringArgs='["Greg", "red", "car"]' data-TranslateArgs="[1, 2]">Greg loves my red car</div>
             <div data-String="MixedFriendship" data-StringArgs='["Amanda", "Greg", "Tom"]'>Amanda, Greg and Tom</div>
             <div data-String="Hello">Hello</div>
-            <!--<div data-String="NotInDatabase">Same</div>-->
+            
             <form>
                 <input type="submit" data-String="Submit" value="Submit"/>
             </form>
+        </div>
+        <div class="None Second">
+            <div data-String="NotInDatabase">Same</div>
+            <div id="Empty">Empty</div>
         </div>
         <div id="qunit"></div>
         <div id="qunit-fixture"></div>

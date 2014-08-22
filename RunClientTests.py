@@ -1,3 +1,4 @@
+#! /usr/bin/python
 """
 Copyright (c) 2014 Eric Vallee <eric_vallee2003@yahoo.ca>
 
@@ -22,8 +23,6 @@ THE SOFTWARE.
 import os
 import urllib2
 import subprocess
-import atexit
-import signal
 import sys
 
 Scripts = {'Sprintf': {'Url': "https://raw.githubusercontent.com/alexei/sprintf.js/master/dist/sprintf.min.js", 'Name': 'sprintf.min.js'},
@@ -72,7 +71,6 @@ NodeServer = None
 def RunServer():
     os.chdir(ServerPath)
     NodeName = ('nodejs' if Exists('nodejs') else 'node')
-    #NodeServer = subprocess.Popen(args=NodeName+" "+Scripts['TestServer']['Name'], shell=True)
     NodeServer = subprocess.Popen(args=[NodeName, Scripts['TestServer']['Name']])
     print("Open your browser at the url 127.0.0.1:8080 to run the tests. Type something to kill both this process and the server.")
     UserInput()
