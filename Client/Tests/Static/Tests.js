@@ -42,11 +42,11 @@ var TestAjaxWrapper = function(Request)
     }
     jQuery.ajax(Request);
 };
-jQuery.LazyLanguageLoader('SetDefaultURL', '/Strings');
 jQuery.LazyLanguageLoader('SetAjaxWrapper', TestAjaxWrapper);
 
 QUnit.asyncTest("Update", function( assert ) {
     localStorage.clear();
+    jQuery.LazyLanguageLoader('SetDefaultURL', '/Strings');
     jQuery.LazyLanguageLoader('SetDefaultLanguage', 'French');
     jQuery('div.First').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
         assert.ok(jQuery('div.First div[data-String=Blue]').text()=="Bleu" && jQuery('div.None div[data-String=House]').text()=="Maison", "Confirming that uploader works at the most basic level.");
@@ -69,8 +69,42 @@ QUnit.asyncTest("Update", function( assert ) {
                             assert.ok(jQuery('div#Empty').text()=="Jim is a fast runner", "Confirming that dynamically loading strings into existing tags works.");
                             assert.ok(jQuery('div.Second div[data-String=SchoolAffection]').text()=="Brad likes school a lot", "Confirming that generating strings dynamically inside html works.");
                             QUnit.start();
+                            localStorage.clear();
                     }});
             }});
+        }});
+    }});
+});
+
+QUnit.asyncTest("Non Addressable Requests", function( assert ) {
+    localStorage.clear();
+    jQuery.LazyLanguageLoader('SetDefaultURL', '/Strings');
+    jQuery.LazyLanguageLoader('SetDefaultLanguage', 'French');
+    jQuery('div.First').LazyLanguageLoader('LoadLanguage', {'AddressableRequest': false, 'Callback': function(){
+        assert.ok(jQuery('div.First div[data-String=Blue]').text()=="Bleu" && jQuery('div.None div[data-String=House]').text()=="Maison", "Confirming that uploader works at the most basic level.");
+        assert.ok(jQuery('div.First div[data-String=CarLove]').text()=="Greg aime mon automobile rouge", "Confirming loading string with arguments works.");
+        QUnit.start();
+        localStorage.clear();
+    }});
+});
+
+QUnit.asyncTest("Expiry", function( assert ) {
+    localStorage.clear();
+    jQuery.LazyLanguageLoader('SetDefaultURL', '/Strings');
+    jQuery.LazyLanguageLoader('SetDefaultLanguage', 'English');
+    jQuery.LazyLanguageLoader('SetExpiry', 200);
+    AjaxRequests = 0;
+    jQuery('div.First').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
+        assert.ok(AjaxRequests==1, "Confirming that initial request happened.");
+        jQuery('div.First').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
+            assert.ok(AjaxRequests==1, "Confirming that local storage is used within the expiry window.");
+            setTimeout(function() {
+                jQuery('div.First').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
+                    assert.ok(AjaxRequests==2, "Confirming that data in local storage isn't reused after expiry.");
+                    QUnit.start();
+                    localStorage.clear();
+                }});
+            }, 210)
         }});
     }});
 });

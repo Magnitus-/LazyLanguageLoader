@@ -23,6 +23,7 @@ THE SOFTWARE.
 var http = require('http');
 var express = require('express');
 var path = require('path');
+var bodyParser = require('body-parser');
 
 var app = express();
 
@@ -33,15 +34,30 @@ var FakeLanguageDB = {};
 FakeLanguageDB['French'] = {'Blue': 'Bleu', 'House': 'Maison', 'CarLove': '%1$s aime mon %3$s %2$s', 'red': 'rouge', 'car': 'automobile', 'Submit': 'Soumettre', 'Hello': '<script>window.FrenchTranslatorFromHell = true;</script>', 'MixedFriendship': '%1$s est bonne amie avec %2$s, mais pas avec %3$s', 'FastRunner': '%1$s est un coureur rapide', 'SchoolAffection': '%1$s aime %2$s l\'\u00E9cole', 'Lot': 'beaucoup'};
 FakeLanguageDB['English'] = {'Blue': 'Blue', 'House': 'House', 'CarLove': '%1$s likes my %2$s %3$s', 'red': 'red', 'car': 'car', 'Submit': 'Submit', 'Hello': 'Hello', 'MixedFriendship': '%1$s is good friends with %2$s, but not with %3$s', 'FastRunner': '%1$s is a fast runner', 'SchoolAffection': '%1$s likes school a %2$s', 'Lot': 'lot'};
 
+app.use(bodyParser.json());
 app.use('/Base', express.static(BasePath));
 app.use('/Static', express.static(StaticPath));
 app.get('/Strings/:Language', function(Req, Res){
-    LastRequest = Req;
     var Return = {'Strings': {}};
     if(Req.query.Strings !== undefined && Req.query.Strings instanceof Array)
     {
         var Language = Req.params.Language;
         Req.query.Strings.forEach(function(Item, Index, Strings){
+            if(FakeLanguageDB[Language] !== undefined && FakeLanguageDB[Language][Item] !== undefined)
+            {
+                Return['Strings'][Item] = FakeLanguageDB[Language][Item];
+            }
+        });
+    }
+    Res.json(Return);
+});
+
+app.post('/Strings/:Language', function(Req, Res){
+    var Return = {'Strings': {}};
+    if(Req.body.Strings !== undefined && Req.body.Strings instanceof Array)
+    {
+        var Language = Req.params.Language;
+        Req.body.Strings.forEach(function(Item, Index, Strings){
             if(FakeLanguageDB[Language] !== undefined && FakeLanguageDB[Language][Item] !== undefined)
             {
                 Return['Strings'][Item] = FakeLanguageDB[Language][Item];

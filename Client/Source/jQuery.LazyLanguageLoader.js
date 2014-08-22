@@ -118,8 +118,11 @@ THE SOFTWARE.
                 HandleCallback();
             };
             if(!Options.AddressableRequest)
-            {
-                AjaxRequest['data'] = {'Language': Options.Language, 'Strings': window.JSON.stringify(NeededTranslations)};
+            {   //Overloaded POST, sometimes necessary is the string list is longer than max URL length
+                AjaxRequest['url'] = AjaxRequest['url']+"/"+encodeURIComponent(Options.Language);
+                AjaxRequest['type'] = 'POST'; 
+                AjaxRequest['contentType'] = 'application/json; charset=UTF-8;';
+                AjaxRequest['data'] = JSON.stringify({'Strings': NeededTranslations});
             }
             else
             {

@@ -3,6 +3,7 @@
   "author": "Eric Vallee",
   "private": true,
   "dependencies": {
-    "express": "~4.8.4"
+    "express": "~4.8.4",
+    "body-parser": "~1.6.5"
   }
 }
