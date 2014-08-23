@@ -41,7 +41,14 @@ THE SOFTWARE.
     };
     
     Methods['SetExpiry'] = function(Value){
-        LocalStoreInstance.Options.Set('Expiry', Value);
+        if(Value)
+        {
+            LocalStoreInstance.Options.Set('Expiry', Value);
+        }
+        else
+        {
+            LocalStoreInstance.Options.Delete('Expiry');
+        }
     };
     
     Methods['StrArgsToHtmlRepr'] = function(Data){
@@ -75,7 +82,7 @@ THE SOFTWARE.
     
     //fn methods
     Methods['LoadLanguage'] = function(Options){
-        var Options = jQuery.extend({'Language': LocalStoreInstance.Options.Get('Language'), 'Url': LocalStoreInstance.Options.Get('Url'), 'AddressableRequest': true, 'Callback': null, 'AjaxOptions': {}}, Options||{});
+        var Options = jQuery.extend({'Language': LocalStoreInstance.Options.Get('Language'), 'Url': LocalStoreInstance.Options.Get('Url'), 'Restful': true, 'Callback': null, 'AjaxOptions': {}}, Options||{});
         ErrorIfNotInOptions('LoadLanguage', 'Language', Options);
         ErrorIfNotInOptions('LoadLanguage', 'Url', Options);
         var Context = this;
@@ -117,7 +124,7 @@ THE SOFTWARE.
                 ShowLanguage.call(Set, {'Language': Options.Language});
                 HandleCallback();
             };
-            if(!Options.AddressableRequest)
+            if(!Options.Restful)
             {   //Overloaded POST, sometimes necessary is the string list is longer than max URL length
                 AjaxRequest['url'] = AjaxRequest['url']+"/"+encodeURIComponent(Options.Language);
                 AjaxRequest['type'] = 'POST'; 

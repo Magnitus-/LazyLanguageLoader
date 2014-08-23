@@ -48,6 +48,8 @@ QUnit.asyncTest("Update", function( assert ) {
     localStorage.clear();
     jQuery.LazyLanguageLoader('SetDefaultURL', '/Strings');
     jQuery.LazyLanguageLoader('SetDefaultLanguage', 'French');
+    jQuery.LazyLanguageLoader('SetExpiry', null);
+    AjaxRequests = 0;
     jQuery('div.First').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
         assert.ok(jQuery('div.First div[data-String=Blue]').text()=="Bleu" && jQuery('div.None div[data-String=House]').text()=="Maison", "Confirming that uploader works at the most basic level.");
         assert.ok(jQuery('div.First form input').val()=="Soumettre", "Confirming that uploader works with submit buttons.");
@@ -80,11 +82,27 @@ QUnit.asyncTest("Non Addressable Requests", function( assert ) {
     localStorage.clear();
     jQuery.LazyLanguageLoader('SetDefaultURL', '/Strings');
     jQuery.LazyLanguageLoader('SetDefaultLanguage', 'French');
-    jQuery('div.First').LazyLanguageLoader('LoadLanguage', {'AddressableRequest': false, 'Callback': function(){
+    jQuery.LazyLanguageLoader('SetExpiry', null);
+    jQuery('div.First').LazyLanguageLoader('LoadLanguage', {'Restful': false, 'Callback': function(){
         assert.ok(jQuery('div.First div[data-String=Blue]').text()=="Bleu" && jQuery('div.None div[data-String=House]').text()=="Maison", "Confirming that uploader works at the most basic level.");
         assert.ok(jQuery('div.First div[data-String=CarLove]').text()=="Greg aime mon automobile rouge", "Confirming loading string with arguments works.");
         QUnit.start();
         localStorage.clear();
+    }});
+});
+
+QUnit.asyncTest("Unicode", function( assert ) {
+    localStorage.clear();
+    jQuery.LazyLanguageLoader('SetDefaultURL', '/Strings');
+    jQuery.LazyLanguageLoader('SetDefaultLanguage', 'French');
+    jQuery.LazyLanguageLoader('SetExpiry', null);
+    jQuery('div.Unicode').LazyLanguageLoader('LoadLanguage', {'Callback': function(){
+            assert.ok(jQuery('div.Unicode div[data-String=FrostWindow]').text()=="Fenêtre Givrée", "Unicode characters are preserved for default GET requests.");
+            localStorage.clear();
+            jQuery('div.Unicode').LazyLanguageLoader('LoadLanguage', {'Restful': false, 'Callback': function(){
+                assert.ok(jQuery('div.Unicode div[data-String=FrostWindow]').text()=="Fenêtre Givrée", "Unicode characters are preserved for overloaded POST requests.");
+                QUnit.start();
+            }});
     }});
 });
 
