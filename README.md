@@ -40,11 +40,15 @@ In order to avoid pollution the jQuery object, only the LazyLanguageLoader prope
 
 Global library calls are made as follows:
 
+```javascript
 jQuery.LazyLanguageLoader('FunctionName', <Arguments>);
+```
 
 Library calls meant to operate on a jQuery set of HTML tags are made as follows:
 
+```javascript
 ThejQuerySet.LazyLanguageLoader('FunctionName', <Arguments>);
+```
 
 Basic Structure
 ===============
@@ -82,7 +86,9 @@ Takes an argument os the form {'String':..., 'Args':..., 'Translate': ...} and o
 
 Ex: 
 
+```javascript
 jQuery('<div '+jQuery.LazyLanguageLoader('StrToHtmlRepr', {'String': 'Hello World'})+'></div>').appendTo(SomeParentTag);
+```
 
 2) StrToAttr
 
@@ -90,7 +96,9 @@ Takes an argument os the form {'String':..., 'Args':..., 'Translate': ...} and s
 
 Ex:
 
+```javascript
 jQuery('div#HelloWorld').LazyLanguageLoader('StrToAttr', {'String': 'Hello World'});
+```
 
 Customization Utilities
 =======================
